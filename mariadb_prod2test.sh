@@ -34,8 +34,8 @@ echo 'dumping from prod'
 > "${fn}"
 if [ -z "${SKIP_TX}" ]
 then
-  echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
-  echo "SET GLOBAL innodb_lock_wait_timeout=1800;" >> "${fn}"
+  #echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
+  #echo "SET GLOBAL innodb_lock_wait_timeout=1800;" >> "${fn}"
   echo "BEGIN;" >> "${fn}"
 fi
 echo "DELETE FROM changes_cache;" >> "${fn}"
@@ -56,7 +56,7 @@ echo "DELETE FROM changes_cache;" >> "${fn}"
 if [ -z "${SKIP_TX}" ]
 then
   echo "COMMIT;" >> "${fn}"
-  echo "SET GLOBAL innodb_lock_wait_timeout=120;" >> "${fn}"
+  #echo "SET GLOBAL innodb_lock_wait_timeout=120;" >> "${fn}"
 fi
 date
 echo 'restoring to test'
