@@ -37,7 +37,7 @@ for table in $tables
 do
   date
   echo "dumping ${table}"
-  cmd="mysqldump --no-create-info --compact ${prod_access} \"${table}\" >> \"${fn}\""
+  cmd="mysqldump --no-create-info --compact --skip-triggers ${prod_access} \"${table}\" >> \"${fn}\""
   # echo "${cmd}"
   eval "${cmd}" || exit 3
 done
