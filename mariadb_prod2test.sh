@@ -34,7 +34,7 @@ echo 'dumping from prod'
 > "${fn}"
 if [ -z "${SKIP_TX}" ]
 then
-  #echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
+  echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
   #echo "SET GLOBAL innodb_lock_wait_timeout=1800;" >> "${fn}"
   echo "BEGIN;" >> "${fn}"
 fi
