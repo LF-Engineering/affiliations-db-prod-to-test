@@ -5,8 +5,8 @@ then
 fi
 cd "$DIR" || exit 1
 prod_access="`cat DB.prod.secret`"
-test_access="`cat DB.test.secret`"
-# test_access="`cat DB.local.secret`"
+# test_access="`cat DB.test.secret`"
+test_access="`cat DB.local.secret`"
 if [ -z "${prod_access}" ]
 then
   echo "$0: missing prod DB access secret"
@@ -31,9 +31,12 @@ function cleanup {
 trap cleanup EXIT
 date
 echo 'dumping from prod'
-echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
-echo "SET GLOBAL innodb_lock_wait_timeout=1800;" >> "${fn}"
-echo "BEGIN;" > "${fn}"
+if [ -z "${SKIP_TX}" ]
+then
+  echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
+  echo "SET GLOBAL innodb_lock_wait_timeout=1800;" >> "${fn}"
+  echo "BEGIN;" > "${fn}"
+fi
 echo "DELETE FROM changes_cache;" >> "${fn}"
 tables="matching_blacklist slug_mapping countries organizations domains_organizations uidentities uidentities_archive profiles profiles_archive identities identities_archive enrollments enrollments_archive"
 for table in $tables
@@ -49,8 +52,11 @@ do
   eval "${cmd}" || exit 3
 done
 echo "DELETE FROM changes_cache;" >> "${fn}"
-echo "COMMIT;" >> "${fn}"
-echo "SET GLOBAL innodb_lock_wait_timeout=120;" >> "${fn}"
+if [ -z "${SKIP_TX}" ]
+then
+  echo "COMMIT;" >> "${fn}"
+  echo "SET GLOBAL innodb_lock_wait_timeout=120;" >> "${fn}"
+fi
 date
 echo 'restoring to test'
 cmd="mysql ${test_access} < \"${fn}\""

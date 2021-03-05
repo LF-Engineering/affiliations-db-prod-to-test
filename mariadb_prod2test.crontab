@@ -1,0 +1,1 @@
+30 9 * * 0 DIR=/root/go/src/github.com/LF-Engineering/affiliations-db-prod-to-test /usr/bin/mariadb_prod2test.sh 1>>/tmp/mariadb_prod2test.log 2>>/tmp/mariadb_prod2test.err
