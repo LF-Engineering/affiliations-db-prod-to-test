@@ -31,9 +31,10 @@ function cleanup {
 trap cleanup EXIT
 date
 echo 'dumping from prod'
+echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
+echo "SET GLOBAL innodb_lock_wait_timeout=1800;" >> "${fn}"
 echo "BEGIN;" > "${fn}"
 echo "DELETE FROM changes_cache;" >> "${fn}"
-echo "SET SESSION innodb_lock_wait_timeout=1800;" >> "${fn}"
 tables="matching_blacklist slug_mapping countries organizations domains_organizations uidentities uidentities_archive profiles profiles_archive identities identities_archive enrollments enrollments_archive"
 for table in $tables
 do
@@ -49,6 +50,7 @@ do
 done
 echo "DELETE FROM changes_cache;" >> "${fn}"
 echo "COMMIT;" >> "${fn}"
+echo "SET GLOBAL innodb_lock_wait_timeout=120;" >> "${fn}"
 date
 echo 'restoring to test'
 cmd="mysql ${test_access} < \"${fn}\""
