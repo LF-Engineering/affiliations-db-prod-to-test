@@ -19,9 +19,14 @@ then
 fi
 fn=./dump.sql
 function cleanup {
+  rv=$?
   # cat "${fn}"
   ls -l "${fn}"
-  # rm -f "${fn}" 1>/dev/null 2>&1
+  if [ "${rv}" = "0" ]
+  then
+    rm -f "${fn}" 1>/dev/null 2>&1
+  fi
+  exit $rv
 }
 trap cleanup EXIT
 date
